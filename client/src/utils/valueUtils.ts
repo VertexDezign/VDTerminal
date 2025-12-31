@@ -6,3 +6,7 @@ export const getVal = (obj: any): boolean | number | string => {
   if (obj === "false") return false;
   return obj;
 };
+
+export const getValAsNumber = (obj: any): number => {
+  return getVal(obj) as number;
+};

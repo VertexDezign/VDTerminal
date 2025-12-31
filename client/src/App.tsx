@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
 import { Satellite } from "lucide-react";
 import type { GGIData } from "./data/GGIData.ts";
 import EngineTransmission from "./panels/EngineTransmission.tsx";
-import FrontHitch from "./panels/FrontHitch.tsx";
-import RearHitch from "./panels/RearHitch.tsx";
 import Lighting from "./panels/Lighting.tsx";
 import Tools from "./panels/Tools.tsx";
 import Operations from "./panels/Operations.tsx";
 import Header from "./components/Header.tsx";
 import Footer from "./components/Footer.tsx";
-
-const socket = io();
+import Implements from "./panels/Implements.tsx";
+import { socket } from "./socket/socket.ts";
 
 function App() {
   const [data, setData] = useState<GGIData | null>(null);
@@ -62,10 +59,10 @@ function App() {
       <Header time={environment.time} />
 
       {/* Main Content Area */}
-      <main className="flex-1 p-2 grid grid-cols-3 gap-2 overflow-hidden">
-        <FrontHitch />
+      <main className="flex-1 p-2 grid grid-cols-3 grid-rows-2 gap-2 overflow-hidden">
+        <Tools />
         <EngineTransmission vehicle={vehicle} />
-        <RearHitch />
+        <Implements vehicle={vehicle} />
         <Lighting vehicle={vehicle} />
         <Tools />
         <Operations />

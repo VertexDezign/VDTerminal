@@ -1,7 +1,7 @@
 import { Minus, Plus, Tractor } from "lucide-react";
 import FendtPanel from "../components/FendtPanel";
 import Gauge from "../components/Gauge";
-import { getVal } from "../utils/valueUtils";
+import { getVal, getValAsNumber } from "../utils/valueUtils";
 
 interface EngineTransmissionProps {
   vehicle: any;
@@ -32,7 +32,7 @@ export default function EngineTransmission({
         </div>
         <Gauge
           label=""
-          value={getVal(vehicle.speed)}
+          value={getValAsNumber(vehicle.speed)}
           min={0}
           max={60}
           unit={vehicle.speed.unit}

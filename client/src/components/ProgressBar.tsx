@@ -1,45 +1,69 @@
-import React from 'react';
+import { useEffect, useRef, useState } from "react";
 
 interface ProgressBarProps {
-  value: number;
-  capacity: number;
-  unit: string;
-  label: string;
-  color?: string;
-  vertical?: boolean;
+  percentage: number;
+  leftLabel?: string;
+  rightLabel?: string;
+  className?: string;
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ value, capacity, unit, label, color = "var(--color-fendt-green)", vertical = false }) => {
-  const percentage = Math.min(Math.max((value / capacity) * 100, 0), 100);
+export default function ProgressBar({
+  percentage,
+  leftLabel,
+  rightLabel,
+  className = "",
+}: ProgressBarProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
 
-  if (vertical) {
-    return (
-      <div className="flex flex-col items-center h-full">
-        <div className="w-4 h-32 bg-gray-200 border border-gray-300 rounded-sm relative overflow-hidden flex flex-col justify-end">
-          <div 
-            className="w-full transition-all duration-1000"
-            style={{ height: `${percentage}%`, backgroundColor: color }}
-          ></div>
-        </div>
-        <span className="mt-1 text-[8px] font-bold text-gray-500 uppercase">{label}</span>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerWidth(entry.contentRect.width);
+      }
+    });
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const content = (
+    <div
+      className="absolute inset-0 flex justify-between items-center px-1"
+      style={{ width: "100%", whiteSpace: "nowrap" }}
+    >
+      <span className="truncate flex-1 mr-1">{leftLabel}</span>
+      <span className="shrink-0">{rightLabel}</span>
+    </div>
+  );
 
   return (
-    <div className="w-full">
-      <div className="flex justify-between items-end mb-1 px-1">
-        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{label}</span>
-        <span className="text-[10px] font-bold text-gray-800 tabular-nums">{value} {unit}</span>
+    <div
+      ref={containerRef}
+      className={`relative h-4 bg-gray-200 rounded overflow-hidden border border-gray-300 text-[9px] font-bold ${className}`}
+    >
+      {/* Background Text (Dark) */}
+      <div className="text-gray-700 select-none w-full h-full relative">
+        {content}
       </div>
-      <div className="w-full bg-gray-200 h-2 border border-gray-300 rounded-sm overflow-hidden">
-        <div 
-          className="h-full transition-all duration-1000"
-          style={{ width: `${percentage}%`, backgroundColor: color }}
-        ></div>
+
+      {/* Progress Bar */}
+      <div
+        className="absolute top-0 left-0 h-full bg-blue-600 transition-all duration-500 overflow-hidden pointer-events-none"
+        style={{ width: `${Math.min(100, Math.max(0, percentage))}%` }}
+      >
+        {/* Foreground Text (White) - same content but clipped by parent width */}
+        <div
+          className="text-white absolute top-0 left-0 h-full select-none"
+          style={{
+            width: `${containerWidth}px`,
+          }}
+        >
+          {content}
+        </div>
       </div>
     </div>
   );
-};
-
-export default ProgressBar;
+}

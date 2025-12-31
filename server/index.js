@@ -1,11 +1,11 @@
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-const chokidar = require('chokidar');
-const { XMLParser } = require('fast-xml-parser');
-const fs = require('fs');
-const path = require('path');
-const cors = require('cors');
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+const chokidar = require("chokidar");
+const { XMLParser } = require("fast-xml-parser");
+const fs = require("fs");
+const path = require("path");
+const cors = require("cors");
 
 const app = express();
 app.use(cors());
@@ -13,30 +13,36 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"]
-  }
+    methods: ["GET", "POST"],
+  },
 });
 
 const PORT = process.env.PORT || 3001;
-const XML_FILE_PATH = path.join('c:','Users','benjamin','Documents','My Games','FarmingSimulator2025', 'gameGlassInterface.xml');
+const XML_FILE_PATH = path.join(
+  process.env.USERPROFILE,
+  "Documents",
+  "My Games",
+  "FarmingSimulator2025",
+  "gameGlassInterface.xml",
+);
 
 const parser = new XMLParser({
   ignoreAttributes: false,
-  attributeNamePrefix: ""
+  attributeNamePrefix: "",
 });
 
 function parseAndEmit(filePath) {
   try {
     if (fs.existsSync(filePath)) {
-      const xmlData = fs.readFileSync(filePath, 'utf8');
+      const xmlData = fs.readFileSync(filePath, "utf8");
       const jsonObj = parser.parse(xmlData);
-      io.emit('ggi-data', jsonObj);
-      console.log('Emitted GGI data at', new Date().toLocaleTimeString());
+      io.emit("ggi-data", jsonObj);
+      console.log("Emitted GGI data at", new Date().toLocaleTimeString());
     } else {
-      console.error('File not found:', filePath);
+      console.error("File not found:", filePath);
     }
   } catch (error) {
-    console.error('Error parsing XML:', error);
+    console.error("Error parsing XML:", error);
   }
 }
 
@@ -45,23 +51,23 @@ const watcher = chokidar.watch(XML_FILE_PATH, {
   persistent: true,
 });
 
-watcher.on('change', (path) => {
+watcher.on("change", (path) => {
   console.log(`File ${path} has been changed`);
   parseAndEmit(path);
 });
 
-watcher.on('add', (path) => {
+watcher.on("add", (path) => {
   console.log(`File ${path} has been added`);
   parseAndEmit(path);
 });
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
+io.on("connection", (socket) => {
+  console.log("a user connected");
   // Send initial data
   parseAndEmit(XML_FILE_PATH);
-  
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
   });
 });
 
