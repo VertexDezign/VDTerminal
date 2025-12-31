@@ -1,4 +1,5 @@
 import { Menu, Minus, Plus, Search } from "lucide-react";
+import { toggleWakeLock } from "../utils/wakeLock.ts";
 
 interface HeaderProps {
   time: string;
@@ -9,7 +10,12 @@ export default function Header({ time }: HeaderProps) {
     <header className="bg-fendt-green text-white p-2 px-4 flex justify-between items-center shadow-md z-10">
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-6">
-          <Menu className="w-6 h-6 cursor-pointer" />
+          <Menu
+            className="w-6 h-6 cursor-pointer"
+            onClick={() => {
+              toggleWakeLock();
+            }}
+          />
           <div className="text-2xl font-bold tabular-nums">{time}</div>
         </div>
       </div>

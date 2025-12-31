@@ -1,4 +1,4 @@
-import { Fuel, Satellite, Tractor } from "lucide-react";
+import { Cpu, Fuel, Satellite } from "lucide-react";
 import { getVal } from "../utils/valueUtils";
 import type { Vehicle } from "../data/Vehicle.ts";
 
@@ -14,50 +14,63 @@ const getDirectionFromHeading = (heading: number) => {
 
 export default function Footer({ vehicle }: FooterProps) {
   // calculate direction (east west north south) from heading
+  const gpsEnabled = getVal(vehicle.gps.enabled);
+  const gpsActive = getVal(vehicle.gps.active);
+  const aiActive = getVal(vehicle.ai.active);
   const direction = getDirectionFromHeading(vehicle.gps.heading);
+  const fuelLevel = vehicle.motor?.fillUnits?.fuel?.fillLevelPercentage ?? 100;
+  const isLowFuel = fuelLevel <= 10;
 
   return (
-    <footer className="bg-black text-white p-2 px-6 flex justify-between items-center h-14">
+    <footer className="bg-black text-white p-2 px-6 grid grid-cols-3 items-center h-14">
       <div className="flex items-center gap-10">
-        <Satellite className="w-6 h-6 text-gray-400" />
-        <div className="w-8 h-8 rounded-full border-2 border-gray-400 flex items-center justify-center">
-          <Tractor className="w-5 h-5" />
+        <div className="relative">
+          <Satellite
+            className={`w-6 h-6 ${
+              gpsEnabled
+                ? gpsActive
+                  ? "text-green-600"
+                  : "text-gray-500"
+                : "text-gray-700"
+            }`}
+          />
+          {!gpsEnabled && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-full h-0.5 bg-red-600 rotate-45" />
+            </div>
+          )}
         </div>
-        <div className="flex flex-col items-center">
-          <div className="text-xs font-bold text-gray-500">A ... B</div>
-          <div className="flex gap-1">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="w-1.5 h-0.5 bg-gray-600"></div>
-            ))}
-          </div>
+        <div
+          className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${aiActive ? "border-green-600" : "border-gray-500"}`}
+        >
+          <Cpu
+            className={`w-5 h-5 ${aiActive ? "text-green-600" : "text-gray-500"}`}
+          />
         </div>
       </div>
 
-      <div className="flex items-center gap-12">
-        <div className="flex flex-col items-center">
-          <div className="text-xs font-bold text-gray-400">90°</div>
-          <div className="w-6 h-6 rounded-full border border-green-500 flex items-center justify-center">
-            <div className="w-0.5 h-4 bg-green-500 transform rotate-45"></div>
-          </div>
-        </div>
-        <div className="w-8 h-8 flex flex-col justify-between py-1">
-          <div className="h-0.5 w-full bg-gray-600"></div>
-          <div className="h-0.5 w-full bg-gray-300"></div>
-          <div className="h-0.5 w-full bg-gray-600"></div>
-        </div>
-        <div className="text-3xl font-bold">{direction}</div>
-        <div className="text-4xl font-black tabular-nums">
+      <div className="flex items-center justify-center gap-12">
+        <div className="text-3xl font-bold w-12 text-center">{direction}</div>
+        <div className="text-4xl font-black tabular-nums w-20 text-center">
           {getVal(vehicle.gps.heading)}
         </div>
         <div className="flex items-center gap-2">
-          <Fuel className="text-gray-400" size={20} />
-          <div className="h-6 w-1 bg-white"></div>
+          <Fuel
+            className={isLowFuel ? "text-red-500" : "text-gray-400"}
+            size={20}
+          />
+          <div className="h-6 w-1 bg-gray-700 relative overflow-hidden">
+            <div
+              className="absolute bottom-0 left-0 w-full bg-white transition-all duration-500"
+              style={{ height: `${fuelLevel}%` }}
+            />
+          </div>
         </div>
       </div>
 
       <div className="flex flex-col items-end text-[10px] font-bold uppercase text-gray-400 leading-tight">
         <div>{getVal(vehicle.name)}</div>
-        <div>{getVal(vehicle.type)}</div>
+        <div className="truncate max-w-full">{getVal(vehicle.type)}</div>
       </div>
     </footer>
   );

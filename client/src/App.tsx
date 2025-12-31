@@ -17,47 +17,11 @@ function App() {
   const [data, setData] = useState<GGIData | null>(null);
 
   useEffect(() => {
-    // Request wake lock
-    let wakeLock: WakeLockSentinel | null = null;
-
-    const requestWakeLock = async () => {
-      try {
-        if ("wakeLock" in navigator) {
-          wakeLock = await navigator.wakeLock.request("screen");
-        } else {
-          alert(
-            "WakeLock API not supported. Please update your browser or device.",
-          );
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-          console.error(`${err.name}, ${err.message}`);
-        } else {
-          console.error("Unkown error", err);
-        }
-      }
-    };
-
-    requestWakeLock();
-
-    // Re-request when page becomes visible again (iPad can release it when tab is hidden)
-    const handleVisibilityChange = () => {
-      if (wakeLock !== null && document.visibilityState === "visible") {
-        requestWakeLock();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
     socket.on("ggi-data", (receivedData) => {
       setData(receivedData);
     });
     return () => {
       socket.off("ggi-data");
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      wakeLock?.release().then(() => {
-        wakeLock = null;
-      });
     };
   }, []);
 
