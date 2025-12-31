@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-fendt-green: #008b45;
+  --color-fendt-light: #e6e7e8;
+  --color-fendt-gray: #cacad0;
+  --color-fendt-darkgray: #666666;
+  --color-fendt-panel: #f0f0f2;
+  --color-fendt-accent: #00a35c;
+  
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+:root {
+  background-color: var(--color-fendt-light);
+  color: #333;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+#root {
+  width: 100%;
+}
