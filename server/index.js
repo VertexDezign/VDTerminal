@@ -18,7 +18,7 @@ const io = new Server(server, {
 });
 
 const PORT = process.env.PORT || 3001;
-const XML_FILE_PATH = path.join('/mnt','c','Users','benjamin','Documents','My Games','FarmingSimulator2025', 'gameGlassInterface.xml');
+const XML_FILE_PATH = path.join('c:','Users','benjamin','Documents','My Games','FarmingSimulator2025', 'gameGlassInterface.xml');
 
 const parser = new XMLParser({
   ignoreAttributes: false,
