@@ -109,7 +109,7 @@ const SimpleGauge: React.FC<SimpleGaugeProps> = ({
           <path
             d={describeArc(center, center, radius, startAngle, currentAngle)}
             fill="none"
-            stroke={isActive ? "var(--color-fendt-green)" : "#94a3b8"}
+            stroke={isActive ? "var(--color-terminal-green)" : "#94a3b8"}
             strokeWidth={strokeWidth}
             strokeLinecap="round"
           />
@@ -120,7 +120,7 @@ const SimpleGauge: React.FC<SimpleGaugeProps> = ({
         {/* Center Value */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span
-            className={`text-3xl font-bold leading-none tabular-nums ${isActive ? "text-fendt-green" : "text-gray-800"}`}
+            className={`text-3xl font-bold leading-none tabular-nums ${isActive ? "text-terminal-green" : "text-gray-800"}`}
           >
             {max < 100
               ? value.toLocaleString("de-CH", {

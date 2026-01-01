@@ -7,7 +7,7 @@ import {
   Power,
   Wrench,
 } from "lucide-react";
-import FendtPanel from "../components/FendtPanel";
+import Panel from "../components/Panel.tsx";
 import ProgressBar from "../components/ProgressBar";
 import StatusIconButton from "../components/StatusIconButton";
 import type { Vehicle } from "../data/Vehicle";
@@ -168,11 +168,11 @@ export default function Implements({ vehicle }: { vehicle: Vehicle }) {
   };
 
   return (
-    <FendtPanel title="Implements" icon={<Anchor size={16} />}>
+    <Panel title="Implements" icon={<Anchor size={16} />}>
       <div className="flex h-full">
         {renderImplementColumn(frontImplement, frontState, "left")}
         {renderImplementColumn(backImplement, backState, "right")}
       </div>
-    </FendtPanel>
+    </Panel>
   );
 }

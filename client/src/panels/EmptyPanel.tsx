@@ -1,10 +1,10 @@
 import { Zap } from "lucide-react";
-import FendtPanel from "../components/FendtPanel";
+import Panel from "../components/Panel.tsx";
 
 export function EmptyPanel() {
   return (
-    <FendtPanel title="ToDo" icon={<Zap size={16} />}>
+    <Panel title="ToDo" icon={<Zap size={16} />}>
       TODO
-    </FendtPanel>
+    </Panel>
   );
 }

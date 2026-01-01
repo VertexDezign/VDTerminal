@@ -3,7 +3,7 @@ import { getVal } from "../utils/valueUtils";
 import type { Vehicle } from "../data/Vehicle.ts";
 
 interface FooterProps {
-  vehicle: Vehicle;
+  vehicle?: Vehicle;
 }
 
 const getDirectionFromHeading = (heading: number) => {
@@ -13,6 +13,22 @@ const getDirectionFromHeading = (heading: number) => {
 };
 
 export default function Footer({ vehicle }: FooterProps) {
+  if (!vehicle) {
+    return (
+      <footer className="bg-black text-white p-2 px-6 flex items-center justify-between h-14">
+        <div className="flex items-center gap-10">
+          <Satellite className="text-gray-700 w-6 h-6" />
+          <div className="w-8 h-8 rounded-full border-2 border-gray-500 flex items-center justify-center">
+            <Cpu className="text-gray-500 w-5 h-5" />
+          </div>
+        </div>
+        <div className="text-[10px] font-bold uppercase text-gray-400">
+          VDTERMINAL SYSTEM READY
+        </div>
+      </footer>
+    );
+  }
+
   // calculate direction (east west north south) from heading
   const gpsEnabled = getVal(vehicle.gps.enabled);
   const gpsActive = getVal(vehicle.gps.active);

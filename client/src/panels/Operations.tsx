@@ -7,12 +7,12 @@ import {
   Video,
   Zap,
 } from "lucide-react";
-import FendtPanel from "../components/FendtPanel";
+import Panel from "../components/Panel.tsx";
 import StatusIconButton from "../components/StatusIconButton";
 
 export default function Operations() {
   return (
-    <FendtPanel title="Operations" icon={<Zap size={16} />}>
+    <Panel title="Operations" icon={<Zap size={16} />}>
       <div className="grid grid-cols-3 gap-2">
         <StatusIconButton icon={<Zap />} active={true} color="green" />
         <StatusIconButton icon={<Fuel />} />
@@ -24,6 +24,6 @@ export default function Operations() {
         <StatusIconButton icon={<Tractor />} />
         <StatusIconButton icon={<Video />} />
       </div>
-    </FendtPanel>
+    </Panel>
   );
 }

@@ -1,5 +1,5 @@
 import { Tractor } from "lucide-react";
-import FendtPanel from "../components/FendtPanel";
+import Panel from "../components/Panel.tsx";
 import SimpleGauge from "../components/SimpleGauge";
 import { getVal, getValAsBoolean, getValAsNumber } from "../utils/valueUtils";
 
@@ -14,7 +14,7 @@ export default function EngineTransmission({
   const cruiseControl = vehicle.cruiseControl;
 
   return (
-    <FendtPanel title="Engine and Transmission" icon={<Tractor size={16} />}>
+    <Panel title="Engine and Transmission" icon={<Tractor size={16} />}>
       <div className="flex flex-col items-center h-full">
         <div className="flex items-center justify-between w-full px-2">
           {/* Left: Minus & RPM */}
@@ -69,7 +69,7 @@ export default function EngineTransmission({
             {cruiseControl && (
               <div className="mt-[-20px] flex flex-col items-center">
                 <span
-                  className={`text-lg font-bold tabular-nums ${getValAsBoolean(cruiseControl.active) ? "text-fendt-green" : "text-gray-600"}`}
+                  className={`text-lg font-bold tabular-nums ${getValAsBoolean(cruiseControl.active) ? "text-terminal-green" : "text-gray-600"}`}
                 >
                   {getVal(cruiseControl.targetSpeed)}
                 </span>
@@ -137,10 +137,10 @@ export default function EngineTransmission({
         </div>
 
         <div className="mt-auto mb-2 flex items-center gap-1 bg-gray-200 p-1 rounded">
-          <Tractor size={14} className="text-fendt-green" />
-          <div className="w-4 h-2 bg-fendt-green rounded-sm"></div>
+          <Tractor size={14} className="text-terminal-green" />
+          <div className="w-4 h-2 bg-terminal-green rounded-sm"></div>
         </div>
       </div>
-    </FendtPanel>
+    </Panel>
   );
 }

@@ -5,7 +5,7 @@ import {
   Siren,
   Triangle,
 } from "lucide-react";
-import FendtPanel from "../components/FendtPanel";
+import Panel from "../components/Panel.tsx";
 import StatusIconButton from "../components/StatusIconButton";
 import { getValAsBoolean } from "../utils/valueUtils.ts";
 import type { Vehicle } from "../data/Vehicle.ts";
@@ -16,7 +16,7 @@ interface LightingProps {
 
 export default function Lighting({ vehicle }: LightingProps) {
   return (
-    <FendtPanel title="Lighting" icon={<Lightbulb size={16} />}>
+    <Panel title="Lighting" icon={<Lightbulb size={16} />}>
       <div className="h-full w-full flex items-center justify-center p-4">
         <div className="relative w-full aspect-[200/120] max-h-full">
           {/* Background Schematic */}
@@ -95,6 +95,6 @@ export default function Lighting({ vehicle }: LightingProps) {
           </div>
         </div>
       </div>
-    </FendtPanel>
+    </Panel>
   );
 }

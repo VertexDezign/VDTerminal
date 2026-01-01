@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Satellite } from "lucide-react";
+import { WifiOff } from "lucide-react";
 import type { GGIData } from "./data/GGIData.ts";
 import EngineTransmission from "./panels/EngineTransmission.tsx";
 import Lighting from "./panels/Lighting.tsx";
@@ -23,38 +23,40 @@ function App() {
 
   if (!data) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[--color-fendt-light]">
-        <div className="text-2xl font-bold animate-pulse text-[--color-fendt-green]">
-          FENDT LOADING...
+      <div className="flex items-center justify-center min-h-screen bg-[--color-terminal-light]">
+        <div className="text-2xl font-bold animate-pulse text-[--color-terminal-green]">
+          VDTERMINAL LOADING...
         </div>
       </div>
     );
   }
 
-  if (!data.GGI.vehicle)
-    return (
-      <>
-        <div className="flex items-center justify-center min-h-screen bg-[--color-fendt-light]">
-          <div className="text-2xl font-bold animate-pulse text-[--color-fendt-green]">
-            FENDT LOADING...
-          </div>
-        </div>
-        <div className="fixed bottom-0 right-0 z-10">
-          <div className="bg-fendt-green text-white p-2 rounded-full shadow-md">
-            <div className="flex items-center gap-2">
-              <Satellite className="w-6 h-6" />
-              <div>No vehicle connected</div>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-
   const vehicle = data.GGI.vehicle;
   const environment = data.GGI.environment;
+  const brandClass = vehicle?.brand?.name
+    ? `brand-${vehicle.brand.name.toLowerCase().replace(/\s+/g, "")}`
+    : "";
+
+  if (!vehicle)
+    return (
+      <div
+        className={`min-h-screen bg-terminal-light flex flex-col font-sans select-none overflow-hidden h-screen ${brandClass}`}
+      >
+        <Header env={environment} vehicle={vehicle} />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-white p-4 rounded-xl shadow-lg flex items-center gap-4 animate-bounce bg-terminal-green">
+            <WifiOff className="w-8 h-8" />
+            <div className="text-xl font-bold">No vehicle connected</div>
+          </div>
+        </main>
+        <Footer vehicle={vehicle} />
+      </div>
+    );
 
   return (
-    <div className="min-h-screen bg-fendt-light flex flex-col font-sans select-none overflow-hidden h-screen">
+    <div
+      className={`min-h-screen bg-terminal-light flex flex-col font-sans select-none overflow-hidden h-screen ${brandClass}`}
+    >
       <Header env={environment} vehicle={vehicle} />
 
       {/* Main Content Area */}

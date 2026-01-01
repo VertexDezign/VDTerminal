@@ -78,7 +78,7 @@ const Gauge: React.FC<GaugeProps> = ({
           <g transform={`rotate(${currentAngle}, ${center}, ${center})`}>
             <path
               d={`M ${center} ${center - radius + 5} L ${center - 4} ${center - radius + 15} L ${center + 4} ${center - radius + 15} Z`}
-              fill="var(--color-fendt-green)"
+              fill="var(--color-terminal-green)"
             />
           </g>
         </svg>

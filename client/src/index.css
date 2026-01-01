@@ -1,19 +1,42 @@
 @import "tailwindcss";
 
 @theme {
-  --color-fendt-green: #008b45;
-  --color-fendt-light: #e6e7e8;
-  --color-fendt-gray: #cacad0;
-  --color-fendt-darkgray: #666666;
-  --color-fendt-panel: #f0f0f2;
-  --color-fendt-accent: #00a35c;
+  --color-terminal-green: #2d8633;
+  --color-terminal-light: #e6e7e8;
+  --color-terminal-gray: #cacad0;
+  --color-terminal-darkgray: #666666;
+  --color-terminal-panel: #f0f0f2;
+  --color-terminal-accent: #00a35c;
   
   --font-sans: "Inter", system-ui, sans-serif;
 }
 
 :root {
-  background-color: var(--color-fendt-light);
+  --color-brand-active: var(--color-terminal-green);
+  --color-brand-text: white;
+  background-color: var(--color-terminal-light);
   color: #333;
+}
+
+.brand-fendt { 
+  --color-brand-active: #008b45;
+  --color-brand-text: white;
+}
+.brand-steyr { 
+  --color-brand-active: #e20026;
+  --color-brand-text: white;
+}
+.brand-valtra { 
+  --color-brand-active: #e4002b;
+  --color-brand-text: white;
+}
+.brand-mercedesbenztrucks { 
+  --color-brand-active: #e9ec5d;
+  --color-brand-text: black;
+}
+.brand-johndeere {
+  --color-brand-active: #367C2B;
+  --color-brand-text: white;
 }
 
 body {

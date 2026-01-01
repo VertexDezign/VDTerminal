@@ -1,9 +1,9 @@
 import { Anchor, Layers, Settings } from "lucide-react";
-import FendtPanel from "../components/FendtPanel";
+import Panel from "../components/Panel.tsx";
 
 export default function Tools() {
   return (
-    <FendtPanel title="Front Tool | Rear Tool" icon={<Settings size={16} />}>
+    <Panel title="Front Tool | Rear Tool" icon={<Settings size={16} />}>
       <div className="grid grid-cols-2 h-full gap-2 py-1">
         {/* Front Tool Status */}
         <div className="flex flex-col gap-1 border-r border-gray-300 pr-1">
@@ -44,6 +44,6 @@ export default function Tools() {
           </div>
         </div>
       </div>
-    </FendtPanel>
+    </Panel>
   );
 }
