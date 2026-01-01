@@ -56,7 +56,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-fendt-light flex flex-col font-sans select-none overflow-hidden h-screen">
-      <Header time={environment.time} />
+      <Header env={environment} vehicle={vehicle} />
 
       {/* Main Content Area */}
       <main className="flex-1 p-2 grid grid-cols-3 grid-rows-2 gap-2 overflow-hidden">

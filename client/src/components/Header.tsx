@@ -1,47 +1,62 @@
-import { Menu, Minus, Plus, Search } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Menu,
+  Minus,
+  Plus,
+  Search,
+  Thermometer,
+  Tractor,
+} from "lucide-react";
 import { toggleWakeLock } from "../utils/wakeLock.ts";
+import type { Environment } from "../data/Environment.ts";
+import type { Vehicle } from "../data/Vehicle.ts";
+import { getVal } from "../utils/valueUtils.ts";
 
 interface HeaderProps {
-  time: string;
+  env: Environment;
+  vehicle?: Vehicle;
 }
 
-export default function Header({ time }: HeaderProps) {
+export default function Header({ env, vehicle }: HeaderProps) {
   return (
-    <header className="bg-fendt-green text-white p-2 px-4 flex justify-between items-center shadow-md z-10">
-      <div className="flex items-center gap-6">
-        <div className="flex items-center gap-6">
-          <Menu
-            className="w-6 h-6 cursor-pointer"
-            onClick={() => {
-              toggleWakeLock();
-            }}
-          />
-          <div className="text-2xl font-bold tabular-nums">{time}</div>
+    <header className="bg-fendt-green text-white p-2 px-4 grid grid-cols-3 items-center shadow-md z-10">
+      <div className="flex items-center gap-12">
+        <Menu
+          className="w-6 h-6 cursor-pointer"
+          onClick={() => {
+            toggleWakeLock();
+          }}
+        />
+        <div className="flex items-center gap-4 tabular-nums">
+          <div className="flex flex-col items-center">
+            <Thermometer size={20} strokeWidth={1.5} />
+            <span className="text-sm font-bold leading-tight">11,9°C</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <Tractor size={20} strokeWidth={1.5} />
+            <span className="text-sm font-bold leading-tight">
+              {getVal(vehicle?.motor?.state)}
+            </span>
+          </div>
+          <div className="flex flex-col items-center">
+            <Calendar size={20} strokeWidth={1.5} />
+            <span className="text-sm font-bold leading-tight">{env.date}</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <Clock size={20} strokeWidth={1.5} />
+            <span className="text-sm font-bold leading-tight">{env.time}</span>
+          </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-8">
-        <div className="flex items-center gap-1">
-          <span className="text-xs text-green-100">X:</span>
-          <span className="text-sm font-bold">1047</span>
-          <span className="text-xs text-green-100 ml-2">Y:</span>
-          <span className="text-sm font-bold">1915</span>
-        </div>
+      <div className="flex items-center justify-center gap-8">
         <div className="text-3xl font-black italic tracking-tighter">
           FENDT™
         </div>
-        <div className="flex items-center gap-4 text-xs font-bold">
-          <span>
-            TEMP: DAY <span className="text-base ml-1">68</span>
-          </span>
-          <span>
-            NIGHT <span className="text-base ml-1">46</span>
-          </span>
-          <span className="uppercase ml-2">Sep</span>
-        </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center justify-end gap-4">
         <Search className="w-5 h-5" />
         <Minus className="w-5 h-5 border border-white/30 rounded" />
         <Plus className="w-5 h-5 border border-white/30 rounded" />
