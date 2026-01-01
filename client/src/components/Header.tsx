@@ -31,7 +31,10 @@ export default function Header({ env, vehicle }: HeaderProps) {
         <div className="flex items-center gap-4 tabular-nums">
           <div className="flex flex-col items-center">
             <Thermometer size={20} strokeWidth={1.5} />
-            <span className="text-sm font-bold leading-tight">11,9°C</span>
+            <span className="text-sm font-bold leading-tight">
+              {env.weather.temperature.current}
+              {env.weather.temperature.unit}
+            </span>
           </div>
           <div className="flex flex-col items-center">
             <Tractor size={20} strokeWidth={1.5} />
