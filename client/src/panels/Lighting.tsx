@@ -76,21 +76,21 @@ export default function Lighting({ vehicle }: LightingProps) {
             <StatusIconButton
               icon={<ArrowLeft size={20} />}
               round={true}
-              active={getValAsBoolean(vehicle.lights?.turnLight?.left)}
+              active={getValAsBoolean(vehicle.lights?.indicator?.left)}
             />
           </div>
           <div className="absolute left-[50%] top-[90%] -translate-x-1/2">
             <StatusIconButton
               icon={<Triangle size={20} />}
               round={true}
-              active={getValAsBoolean(vehicle.lights?.turnLight?.hazard)}
+              active={getValAsBoolean(vehicle.lights?.indicator?.hazard)}
             />
           </div>
           <div className="absolute left-[65%] top-[90%] -translate-x-1/2">
             <StatusIconButton
               icon={<ArrowRight size={20} />}
               round={true}
-              active={getValAsBoolean(vehicle.lights?.turnLight?.right)}
+              active={getValAsBoolean(vehicle.lights?.indicator?.right)}
             />
           </div>
         </div>
