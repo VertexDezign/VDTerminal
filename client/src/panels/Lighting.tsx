@@ -17,17 +17,17 @@ interface LightingProps {
 export default function Lighting({ vehicle }: LightingProps) {
   return (
     <Panel title="Lighting" icon={<Lightbulb size={16} />}>
-      <div className="h-full w-full flex items-center justify-center p-4">
-        <div className="relative w-full aspect-[200/120] max-h-full">
+      <div className="w-full h-full flex items-center justify-center overflow-hidden relative">
+        <div className="relative max-h-full max-w-full aspect-square">
           {/* Background Schematic */}
           <img
             src="mb_trac.png"
-            className="absolute inset-0 w-full h-full object-contain pointer-events-none opacity-50"
+            className="w-full h-full object-contain block opacity-50"
             alt="Tractor Schematic"
           />
 
           {/* Beacon Light - Top center of cabin */}
-          <div className="absolute left-[58%] top-[-15%] -translate-x-1/2">
+          <div className="absolute left-[58%] top-[15%] -translate-1/2">
             <StatusIconButton
               icon={<Siren size={20} />}
               round={true}
@@ -36,7 +36,7 @@ export default function Lighting({ vehicle }: LightingProps) {
           </div>
 
           {/* Worklight Front - Front of cabin */}
-          <div className="absolute left-[42%] top-[0%] -translate-x-1/2">
+          <div className="absolute left-[42%] top-[25%] -translate-1/2">
             <StatusIconButton
               icon={<Lightbulb size={20} />}
               round={true}
@@ -45,7 +45,7 @@ export default function Lighting({ vehicle }: LightingProps) {
           </div>
 
           {/* Worklight Back - Back of cabin */}
-          <div className="absolute left-[74%] top-[0%] -translate-x-1/2">
+          <div className="absolute left-[74%] top-[25%] -translate-1/2">
             <StatusIconButton
               icon={<Lightbulb size={20} />}
               round={true}
@@ -54,7 +54,7 @@ export default function Lighting({ vehicle }: LightingProps) {
           </div>
 
           {/* High Beam - Upper front */}
-          <div className="absolute left-[15%] top-[25%] -translate-x-1/2">
+          <div className="absolute left-[10%] top-[42%] -translate-1/2">
             <StatusIconButton
               icon={<Lightbulb size={20} />}
               round={true}
@@ -63,7 +63,7 @@ export default function Lighting({ vehicle }: LightingProps) {
           </div>
 
           {/* Low Beam - Lower front */}
-          <div className="absolute left-[15%] top-[50%] -translate-x-1/2">
+          <div className="absolute left-[10%] top-[55%] -translate-1/2">
             <StatusIconButton
               icon={<Lightbulb size={20} />}
               round={true}
@@ -72,21 +72,21 @@ export default function Lighting({ vehicle }: LightingProps) {
           </div>
 
           {/* Indicators / Turn Signals (optional bottom row if needed) */}
-          <div className="absolute left-[35%] top-[90%] -translate-x-1/2">
+          <div className="absolute left-[35%] top-[83%] -translate-1/2">
             <StatusIconButton
               icon={<ArrowLeft size={20} />}
               round={true}
               active={getValAsBoolean(vehicle.lights?.indicator?.left)}
             />
           </div>
-          <div className="absolute left-[50%] top-[90%] -translate-x-1/2">
+          <div className="absolute left-[50%] top-[83%] -translate-1/2">
             <StatusIconButton
               icon={<Triangle size={20} />}
               round={true}
               active={getValAsBoolean(vehicle.lights?.indicator?.hazard)}
             />
           </div>
-          <div className="absolute left-[65%] top-[90%] -translate-x-1/2">
+          <div className="absolute left-[65%] top-[83%] -translate-1/2">
             <StatusIconButton
               icon={<ArrowRight size={20} />}
               round={true}
