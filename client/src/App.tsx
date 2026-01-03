@@ -8,6 +8,7 @@ import Footer from "./components/Footer.tsx";
 import Implements from "./panels/Implements.tsx";
 import { socket } from "./socket/socket.ts";
 import { EmptyPanel } from "./panels/EmptyPanel.tsx";
+import { MapPanel } from "./panels/MapPanel.tsx";
 
 function App() {
   const [data, setData] = useState<GGIData | null>(null);
@@ -61,7 +62,7 @@ function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 p-2 grid grid-cols-3 grid-rows-2 gap-2 overflow-hidden">
-        <EmptyPanel />
+        <MapPanel env={environment} vehicle={vehicle} />
         <EngineTransmission vehicle={vehicle} />
         <Implements vehicle={vehicle} />
         <Lighting vehicle={vehicle} />
