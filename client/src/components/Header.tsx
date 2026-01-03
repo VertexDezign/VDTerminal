@@ -19,10 +19,10 @@ interface HeaderProps {
 }
 
 export default function Header({ env, vehicle }: HeaderProps) {
-  const brandName = vehicle?.brand?.name || "VDTerminal";
+  const brandName = vehicle?.brand?.title || "VDTerminal";
 
   return (
-    <header className="bg-[var(--color-brand-active)] text-[var(--color-brand-text)] p-2 px-4 grid grid-cols-3 items-center shadow-md z-10">
+    <header className="bg-(--color-brand-active) text-(--color-brand-text) p-2 px-4 grid grid-cols-3 items-center shadow-md z-10">
       <div className="flex items-center gap-12">
         <Menu
           className="w-6 h-6 cursor-pointer"
@@ -55,7 +55,7 @@ export default function Header({ env, vehicle }: HeaderProps) {
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-8">
+      <div className="flex items-center justify-center gap-8 text-(--color-brand-label-text)">
         <div className="text-3xl font-black italic tracking-tighter uppercase">
           {brandName}
         </div>

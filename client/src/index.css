@@ -18,24 +18,34 @@
   color: #333;
 }
 
+.brand-claas {
+  --color-brand-active: #B4C618;
+  --color-brand-label-text: #FE0000;
+  --color-brand-text: white;
+}
 .brand-fendt { 
   --color-brand-active: #008b45;
+  --color-brand-label-text: white;
   --color-brand-text: white;
 }
 .brand-steyr { 
   --color-brand-active: #e20026;
+  --color-brand-label-text: white;
   --color-brand-text: white;
 }
 .brand-valtra { 
   --color-brand-active: #e4002b;
+  --color-brand-label-text: white;
   --color-brand-text: white;
 }
 .brand-mercedesbenztrucks { 
   --color-brand-active: #e9ec5d;
+  --color-brand-label-text: black;
   --color-brand-text: black;
 }
 .brand-johndeere {
   --color-brand-active: #367C2B;
+  --color-brand-label-text: white;
   --color-brand-text: white;
 }
 
