@@ -1,7 +1,8 @@
-import { Tractor } from "lucide-react";
+import { ArrowDown, ArrowUp, FoldVertical, Power, Tractor } from "lucide-react";
 import Panel from "../components/Panel.tsx";
 import SimpleGauge from "../components/SimpleGauge";
 import { getVal, getValAsBoolean, getValAsNumber } from "../utils/valueUtils";
+import StatusIconButton from "../components/StatusIconButton.tsx";
 
 interface EngineTransmissionProps {
   vehicle: any;
@@ -12,6 +13,10 @@ export default function EngineTransmission({
 }: EngineTransmissionProps) {
   const motor = vehicle.motor;
   const cruiseControl = vehicle.cruiseControl;
+
+  const foldable = getVal(vehicle?.foldable);
+  const isTurnedOn = getValAsBoolean(vehicle?.isTurnedOn);
+  const lowered = getValAsBoolean(vehicle?.lowered);
 
   return (
     <Panel title="Engine and Transmission" icon={<Tractor size={16} />}>
@@ -50,6 +55,15 @@ export default function EngineTransmission({
               <span className="text-[9px] font-bold text-gray-400 uppercase">
                 RPM
               </span>
+            </div>
+            <div className="mt-4 flex flex-col items-center">
+              <div className="text-sm font-bold text-gray-600 tabular-nums">
+                {getVal(vehicle?.motor?.fillUnits?.fuel?.usage)}
+                {getVal(vehicle?.motor?.fillUnits?.fuel?.unit)}
+              </div>
+              <div className="text-[9px] font-bold text-gray-400 uppercase">
+                FUEL/HR
+              </div>
             </div>
           </div>
 
@@ -108,31 +122,40 @@ export default function EngineTransmission({
             </div>
             <div className="mt-4 flex flex-col items-center">
               <span className="text-lg font-bold text-gray-700 tabular-nums">
-                {getVal(motor.temperatur)}
+                {getVal(motor.temperatur)} {getVal(motor.temperatur.unit)}
               </span>
               <span className="text-[9px] font-bold text-gray-400 uppercase">
                 WATER
               </span>
             </div>
+            <div className="mt-4 flex flex-col items-center">
+              <span className="text-sm font-bold text-gray-600 tabular-nums">
+                {getVal(vehicle?.motor?.fillUnits?.def?.usage)}
+              </span>
+              <span className="text-[9px] font-bold text-gray-400 uppercase">
+                DEF/HR
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 w-full mt-4 gap-x-8 text-center border-t border-gray-100 pt-2">
-          <div>
-            <div className="text-[8px] font-bold text-gray-400 uppercase">
-              FUEL/HR
-            </div>
-            <div className="text-sm font-bold text-gray-600 tabular-nums">
-              {getVal(vehicle?.motor?.fillUnits?.fuel?.usage)}
-            </div>
-          </div>
-          <div>
-            <div className="text-[8px] font-bold text-gray-400 uppercase">
-              DEF/HR
-            </div>
-            <div className="text-sm font-bold text-gray-600 tabular-nums">
-              {getVal(vehicle?.motor?.fillUnits?.def?.usage)}
-            </div>
+        <div className="w-full mt-4 gap-x-8 text-center border-t border-gray-100 pt-2">
+          <div className="flex flex-row gap-2">
+            <StatusIconButton
+              icon={<FoldVertical size={20} />}
+              active={foldable === "FOLDED" || foldable === "EXTENDED"}
+              color={foldable === "EXTENDED" ? "green" : "white"}
+            />
+            <StatusIconButton
+              icon={<Power size={20} />}
+              active={isTurnedOn}
+              color="green"
+            />
+            <StatusIconButton
+              icon={lowered ? <ArrowDown size={20} /> : <ArrowUp size={20} />}
+              active={lowered}
+              color="green"
+            />
           </div>
         </div>
 
