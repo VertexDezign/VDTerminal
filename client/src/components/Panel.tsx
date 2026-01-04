@@ -4,10 +4,12 @@ export default function Panel({
   title,
   children,
   icon,
+  headerActions,
 }: {
   title: string;
   children: ReactNode;
   icon?: ReactNode;
+  headerActions?: ReactNode;
 }) {
   return (
     <div className="bg-terminal-panel border border-gray-300 rounded shadow-sm flex flex-col overflow-hidden min-h-0">
@@ -18,7 +20,8 @@ export default function Panel({
             {title}
           </span>
         </div>
-        <div className="flex gap-1">
+        <div className="flex gap-1 items-center">
+          {headerActions}
           <div className="w-4 h-4 rounded-full bg-gray-200 border border-gray-300"></div>
         </div>
       </div>
