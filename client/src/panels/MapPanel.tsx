@@ -3,6 +3,9 @@ import { Crosshair, Map, Navigation, ZoomIn, ZoomOut } from "lucide-react";
 import Panel from "../components/Panel.tsx";
 import type { Environment } from "../data/Environment.ts";
 import type { Vehicle } from "../data/Vehicle.ts";
+import { StorageProvider } from "@lightspots/storageprovider";
+
+const storage = StorageProvider.localStorage("map");
 
 interface MapPanelProps {
   env: Environment;
@@ -13,11 +16,21 @@ export function MapPanel({ env, vehicle }: MapPanelProps) {
   const pda = env.pda;
   const imageUrl = `api/map-image`;
 
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(storage.getAsNumber("scale") || 1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
-  const [autoCenter, setAutoCenter] = useState(false);
+  const [autoCenter, setAutoCenter] = useState(
+    storage.getAsBoolean("autoCenter") ?? false,
+  );
+
+  useEffect(() => {
+    storage.set("scale", scale);
+  }, [scale]);
+
+  useEffect(() => {
+    storage.set("autoCenter", autoCenter);
+  }, [autoCenter]);
 
   const containerRef = useRef<HTMLDivElement>(null);
 

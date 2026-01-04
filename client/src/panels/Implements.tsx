@@ -9,17 +9,24 @@ import {
   Power,
   Wrench,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Panel from "../components/Panel.tsx";
 import StatusIconButton from "../components/StatusIconButton";
 import type { Vehicle } from "../data/Vehicle";
 import { getVal, getValAsNumber } from "../utils/valueUtils.ts";
 import FillUnitsDisplay from "../components/FillUnitsDisplay.tsx";
+import { StorageProvider } from "@lightspots/storageprovider";
+
+const storage = StorageProvider.localStorage("implements");
 
 export default function Implements({ vehicle }: { vehicle: Vehicle }) {
   const [displayMode, setDisplayMode] = useState<"separate" | "merged">(
-    "separate",
+    (storage.getAsString("displayMode") as "separate" | "merged") || "separate",
   );
+
+  useEffect(() => {
+    storage.set("displayMode", displayMode);
+  }, [displayMode]);
   const implementsData = vehicle.implement || [];
   const implementsArray = Array.isArray(implementsData)
     ? implementsData
