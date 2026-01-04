@@ -8,10 +8,10 @@ import {
   Wrench,
 } from "lucide-react";
 import Panel from "../components/Panel.tsx";
-import ProgressBar from "../components/ProgressBar";
 import StatusIconButton from "../components/StatusIconButton";
 import type { Vehicle } from "../data/Vehicle";
 import { getVal } from "../utils/valueUtils.ts";
+import FillUnitsDisplay from "../components/FillUnitsDisplay.tsx";
 
 export default function Implements({ vehicle }: { vehicle: Vehicle }) {
   const implementsData = vehicle.implement || [];
@@ -54,9 +54,6 @@ export default function Implements({ vehicle }: { vehicle: Vehicle }) {
     const lowered = !!getVal(state.lowered);
 
     const fillUnitsData = imp?.fillUnits?.fillUnit || [];
-    const fillUnits = Array.isArray(fillUnitsData)
-      ? fillUnitsData
-      : [fillUnitsData];
 
     // Use combined wear if available, otherwise use implement specific wear
     const damage =
@@ -141,27 +138,11 @@ export default function Implements({ vehicle }: { vehicle: Vehicle }) {
         </div>
 
         {/* Fill Units */}
-        {isAttached && fillUnits.length > 0 && (
-          <div className="flex flex-col gap-1 mt-auto">
-            {fillUnits.map((fu: any, idx: number) => {
-              const percentage = parseInt(fu.fillLevelPercentage || "0");
-              const title = fu.title || fu.type;
-              const level = getVal(fu);
-              const unit = fu.unit || "";
-
-              if (!fu.type && !fu.title && (level === 0 || level === "0"))
-                return null;
-
-              return (
-                <ProgressBar
-                  key={idx}
-                  percentage={percentage}
-                  leftLabel={title || "Fill"}
-                  rightLabel={`${level}${unit}`}
-                />
-              );
-            })}
-          </div>
+        {isAttached && fillUnitsData.length > 0 && (
+          <FillUnitsDisplay
+            fillUnits={fillUnitsData}
+            className="flex flex-col gap-1 mt-auto"
+          />
         )}
       </div>
     );

@@ -3,6 +3,7 @@ import Panel from "../components/Panel.tsx";
 import SimpleGauge from "../components/SimpleGauge";
 import { getVal, getValAsBoolean, getValAsNumber } from "../utils/valueUtils";
 import StatusIconButton from "../components/StatusIconButton.tsx";
+import FillUnitsDisplay from "../components/FillUnitsDisplay.tsx";
 
 interface EngineTransmissionProps {
   vehicle: any;
@@ -17,6 +18,8 @@ export default function EngineTransmission({
   const foldable = getVal(vehicle?.foldable);
   const isTurnedOn = getValAsBoolean(vehicle?.isTurnedOn);
   const lowered = getValAsBoolean(vehicle?.lowered);
+
+  const fillUnitsData = vehicle?.fillUnits?.fillUnit || [];
 
   return (
     <Panel title="Engine and Transmission" icon={<Tractor size={16} />}>
@@ -139,7 +142,7 @@ export default function EngineTransmission({
           </div>
         </div>
 
-        <div className="w-full mt-4 gap-x-8 text-center border-t border-gray-100 pt-2">
+        <div className="flex flex-col gap-2 w-full mt-4 text-center border-t border-gray-100 pt-2">
           <div className="flex flex-row gap-2">
             <StatusIconButton
               icon={<FoldVertical size={20} />}
@@ -157,6 +160,7 @@ export default function EngineTransmission({
               color="green"
             />
           </div>
+          <FillUnitsDisplay fillUnits={fillUnitsData} />
         </div>
 
         <div className="mt-auto mb-2 flex items-center gap-1 bg-gray-200 p-1 rounded">
