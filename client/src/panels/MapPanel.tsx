@@ -1,13 +1,14 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Crosshair, Map, ZoomIn, ZoomOut } from "lucide-react";
 import {
-  type MouseEvent,
-  type TouchEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type WheelEvent,
-} from "react";
-import { Crosshair, Map, Navigation, ZoomIn, ZoomOut } from "lucide-react";
+  ImageOverlay,
+  MapContainer,
+  Marker,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import Panel from "../components/Panel.tsx";
 import type { Environment } from "../data/Environment.ts";
 import type { Vehicle } from "../data/Vehicle.ts";
@@ -24,43 +25,44 @@ export function MapPanel({ env, vehicle }: MapPanelProps) {
   const pda = env.pda;
   const imageUrl = `api/map-image`;
 
-  const [scale, setScale] = useState(storage.getAsNumber("scale") || 1);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
   const [autoCenter, setAutoCenter] = useState(
     storage.getAsBoolean("autoCenter") ?? false,
   );
+  const [zoom, setZoom] = useState(storage.getAsNumber("zoom") ?? 0);
 
   useEffect(() => {
-    storage.set("scale", scale);
-  }, [scale]);
+    storage.set("zoom", zoom);
+  }, [zoom]);
 
   useEffect(() => {
     storage.set("autoCenter", autoCenter);
   }, [autoCenter]);
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<L.Map | null>(null);
+  const mapSize = useMemo(() => {
+    if (!pda?.width || !pda?.height) return null;
+    return { width: pda.width, height: pda.height };
+  }, [pda?.height, pda?.width]);
+  const mapBounds = useMemo<L.LatLngBoundsExpression | null>(() => {
+    if (!mapSize) return null;
+    return [
+      [0, 0],
+      [mapSize.height, mapSize.width],
+    ];
+  }, [mapSize]);
 
   const player = pda?.player;
   const centerOnPlayer = useCallback(() => {
-    if (!player || !containerRef.current) return;
-
-    // Player position is 0-1. Map is aspect-square, centered in container.
-    // We want the player to be at (clientWidth/2, clientHeight/2)
-    // The map itself might be smaller than container if object-contain is used,
-    // but here we are scaling a div that contains the map.
-
-    // Target offset to center player:
-    // newX = 0.5 - playerPosX
-    // newY = 0.5 - playerPosZ
-    // (all in relative units of the map size)
-
-    setOffset({
-      x: (0.5 - player.posX) * 100,
-      y: (0.5 - player.posZ) * 100,
-    });
-  }, [player]);
+    if (!player || !mapRef.current || !mapSize) return;
+    mapRef.current.setView(
+      [
+        mapSize.height - player.posZ * mapSize.height,
+        player.posX * mapSize.width,
+      ],
+      mapRef.current.getZoom(),
+      { animate: true, duration: 0.5, easeLinearity: 1 },
+    );
+  }, [mapSize, player]);
 
   useEffect(() => {
     if (autoCenter) {
@@ -68,68 +70,21 @@ export function MapPanel({ env, vehicle }: MapPanelProps) {
     }
   }, [autoCenter, centerOnPlayer]);
 
-  const handleMouseDown = (e: MouseEvent | TouchEvent) => {
-    setIsDragging(true);
-    setAutoCenter(false);
-    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
-    setLastPos({ x: clientX, y: clientY });
-  };
-
-  const handleMouseMove = (e: MouseEvent | TouchEvent) => {
-    if (!isDragging) return;
-
-    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
-
-    const dx = clientX - lastPos.x;
-    const dy = clientY - lastPos.y;
-
-    if (containerRef.current) {
-      const { clientWidth, clientHeight } = containerRef.current;
-      const mapSize = Math.min(clientWidth, clientHeight);
-
-      setOffset((prev) => ({
-        x: prev.x + (dx / mapSize / scale) * 100,
-        y: prev.y + (dy / mapSize / scale) * 100,
-      }));
-    }
-
-    setLastPos({ x: clientX, y: clientY });
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleWheel = (e: WheelEvent) => {
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    const newScale = Math.min(Math.max(scale * delta, 1), 10);
-
-    if (newScale > scale && !autoCenter) {
-      // Optional: auto-center on zoom in if requested by issue description
-      // "Center on vehicle (should happen automatically on zoom in)"
-      setAutoCenter(true);
-    }
-
-    if (newScale === 1) {
-      setOffset({ x: 0, y: 0 });
-      setAutoCenter(false);
-    }
-
-    setScale(newScale);
-  };
+  useEffect(() => {
+    if (!mapRef.current || !mapBounds) return;
+    mapRef.current.fitBounds(mapBounds, { animate: false });
+  }, [mapBounds]);
 
   const zoomIn = () => {
-    setScale((prev) => Math.min(prev * 1.2, 10));
-    setAutoCenter(true);
+    mapRef.current?.zoomIn();
+    // setAutoCenter(true);
   };
 
   const zoomOut = () => {
-    const newScale = Math.max(scale / 1.2, 1);
-    setScale(newScale);
-    if (newScale === 1) {
-      setOffset({ x: 0, y: 0 });
+    const map = mapRef.current;
+    if (!map) return;
+    map.zoomOut();
+    if (map.getZoom() - 1 <= map.getMinZoom()) {
       setAutoCenter(false);
     }
   };
@@ -164,55 +119,111 @@ export function MapPanel({ env, vehicle }: MapPanelProps) {
         </div>
       }
     >
-      <div
-        ref={containerRef}
-        className="w-full h-full flex items-center justify-center overflow-hidden relative touch-none select-none"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onTouchStart={handleMouseDown}
-        onTouchMove={handleMouseMove}
-        onTouchEnd={handleMouseUp}
-        onWheel={handleWheel}
-      >
+      <div className="w-full h-full overflow-hidden relative">
         {pda?.filename ? (
-          <div className="relative w-full h-full flex items-center justify-center">
-            <div
-              className="relative max-h-full max-w-full aspect-square"
-              style={{
-                transform: `scale(${scale}) translate(${offset.x}%, ${offset.y}%)`,
+          <MapContainer
+            className="w-full h-full rounded-lg"
+            crs={L.CRS.Simple}
+            center={[0, 0]}
+            zoom={zoom}
+            minZoom={-2}
+            maxZoom={4}
+            maxBounds={mapBounds ?? undefined}
+            maxBoundsViscosity={1.0}
+            zoomControl={false}
+            ref={mapRef}
+          >
+            <MapEventBridge
+              autoCenter={autoCenter}
+              player={player}
+              mapSize={mapSize ?? undefined}
+              onUserMove={() => setAutoCenter(false)}
+              onZoomChange={(nextZoom, prevZoom) => {
+                setZoom(nextZoom);
+                if (nextZoom > prevZoom && !autoCenter) {
+                  // setAutoCenter(true);
+                }
               }}
-            >
-              <img
-                src={imageUrl}
-                alt="Map"
-                className="w-full h-full object-contain block rounded-lg pointer-events-none"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = "none";
-                }}
+            />
+            {mapBounds && <ImageOverlay url={imageUrl} bounds={mapBounds} />}
+            {player && mapSize && (
+              <Marker
+                position={[
+                  mapSize.height - player.posZ * mapSize.height,
+                  player.posX * mapSize.width,
+                ]}
+                icon={createPlayerIcon(vehicle?.gps?.heading || 0)}
               />
-              {pda.player && (
-                <div
-                  className="absolute"
-                  style={{
-                    top: `${pda.player.posZ * 100}%`,
-                    left: `${pda.player.posX * 100}%`,
-                    transform: `translate(-50%, -50%) rotate(${(vehicle?.gps?.heading || 0) - 45}deg)`,
-                  }}
-                >
-                  <Navigation
-                    size={20 / scale}
-                    className="text-red-500 fill-red-500"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
+            )}
+          </MapContainer>
         ) : (
           <div className="text-gray-500 text-sm">No map data available</div>
         )}
       </div>
     </Panel>
   );
+}
+
+function MapEventBridge({
+  autoCenter,
+  player,
+  mapSize,
+  onUserMove,
+  onZoomChange,
+}: {
+  autoCenter: boolean;
+  player?: { posX: number; posZ: number };
+  mapSize?: { width: number; height: number };
+  onUserMove: () => void;
+  onZoomChange: (nextZoom: number, prevZoom: number) => void;
+}) {
+  const map = useMap();
+  const prevZoomRef = useRef(map.getZoom());
+  const isAutoCenteringRef = useRef(false);
+  const playerPosX = player?.posX ?? null;
+  const playerPosZ = player?.posZ ?? null;
+
+  useMapEvents({
+    dragstart: () => {
+      isAutoCenteringRef.current = false;
+      onUserMove();
+    },
+    zoomend: () => {
+      const nextZoom = map.getZoom();
+      const prevZoom = prevZoomRef.current;
+      prevZoomRef.current = nextZoom;
+      onZoomChange(nextZoom, prevZoom);
+    },
+  });
+
+  useEffect(() => {
+    if (!autoCenter || !mapSize || playerPosX === null || playerPosZ === null) {
+      return;
+    }
+
+    isAutoCenteringRef.current = true;
+    map.setView(
+      [
+        mapSize.height - playerPosZ * mapSize.height,
+        playerPosX * mapSize.width,
+      ],
+      map.getZoom(),
+      { animate: true, duration: 0.5, easeLinearity: 1 },
+    );
+  }, [autoCenter, map, mapSize, playerPosX, playerPosZ]);
+
+  return null;
+}
+
+function createPlayerIcon(rotation: number) {
+  const arrowSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#ef4444" stroke="#ef4444" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(${rotation}deg); transform-origin: 50% 50%;">
+    <path d="M12 3L20 21L12 17L4 21L12 3Z"></path>
+  </svg>`;
+
+  return L.divIcon({
+    className: "map-player-marker",
+    html: arrowSvg,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+  });
 }

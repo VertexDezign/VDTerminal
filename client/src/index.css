@@ -59,3 +59,8 @@ body {
 #root {
   width: 100%;
 }
+
+.map-player-marker {
+  transition: transform 0.5s linear;
+  will-change: transform;
+}
