@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  type MouseEvent,
+  type TouchEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type WheelEvent,
+} from "react";
 import { Crosshair, Map, Navigation, ZoomIn, ZoomOut } from "lucide-react";
 import Panel from "../components/Panel.tsx";
 import type { Environment } from "../data/Environment.ts";
@@ -34,8 +42,9 @@ export function MapPanel({ env, vehicle }: MapPanelProps) {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const player = pda?.player;
   const centerOnPlayer = useCallback(() => {
-    if (!pda?.player || !containerRef.current) return;
+    if (!player || !containerRef.current) return;
 
     // Player position is 0-1. Map is aspect-square, centered in container.
     // We want the player to be at (clientWidth/2, clientHeight/2)
@@ -48,10 +57,10 @@ export function MapPanel({ env, vehicle }: MapPanelProps) {
     // (all in relative units of the map size)
 
     setOffset({
-      x: (0.5 - pda.player.posX) * 100,
-      y: (0.5 - pda.player.posZ) * 100,
+      x: (0.5 - player.posX) * 100,
+      y: (0.5 - player.posZ) * 100,
     });
-  }, [pda?.player]);
+  }, [player]);
 
   useEffect(() => {
     if (autoCenter) {
@@ -59,7 +68,7 @@ export function MapPanel({ env, vehicle }: MapPanelProps) {
     }
   }, [autoCenter, centerOnPlayer]);
 
-  const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleMouseDown = (e: MouseEvent | TouchEvent) => {
     setIsDragging(true);
     setAutoCenter(false);
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
@@ -67,7 +76,7 @@ export function MapPanel({ env, vehicle }: MapPanelProps) {
     setLastPos({ x: clientX, y: clientY });
   };
 
-  const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleMouseMove = (e: MouseEvent | TouchEvent) => {
     if (!isDragging) return;
 
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
@@ -93,7 +102,7 @@ export function MapPanel({ env, vehicle }: MapPanelProps) {
     setIsDragging(false);
   };
 
-  const handleWheel = (e: React.WheelEvent) => {
+  const handleWheel = (e: WheelEvent) => {
     const delta = e.deltaY > 0 ? 0.9 : 1.1;
     const newScale = Math.min(Math.max(scale * delta, 1), 10);
 
@@ -194,7 +203,7 @@ export function MapPanel({ env, vehicle }: MapPanelProps) {
                 >
                   <Navigation
                     size={20 / scale}
-                    className="text-red-500 fill-red-500 drop-shadow-[0_0_2px_rgba(0,0,0,0.8)]"
+                    className="text-red-500 fill-red-500"
                   />
                 </div>
               )}
