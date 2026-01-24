@@ -30,7 +30,7 @@ const GAME_DIR = path.join(
 );
 const XML_FILE_PATH = path.join(GAME_DIR, "gameGlassInterface.xml");
 
-app.get("/map-image", async (req, res) => {
+app.get("/api/map-image", async (req, res) => {
   try {
     if (!fs.existsSync(XML_FILE_PATH)) {
       return res.status(404).send("XML file not found");
