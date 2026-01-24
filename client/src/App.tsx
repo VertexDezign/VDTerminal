@@ -15,7 +15,9 @@ function App() {
 
   useEffect(() => {
     socket.on("ggi-data", (receivedData: GGIData) => {
-      setData(receivedData);
+      if (receivedData.GGI) {
+        setData(receivedData);
+      }
     });
     return () => {
       socket.off("ggi-data");
