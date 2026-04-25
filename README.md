@@ -1,4 +1,4 @@
-# GGI Dashboard
+# VDTerminal
 
 This is a small website that displays data from the Farming Simulator mod in real-time.
 
@@ -10,7 +10,7 @@ This is a small website that displays data from the Farming Simulator mod in rea
 ## Setup
 
 1. Make sure you have Node.js installed.
-2. From the `dashboard` directory, install dependencies:
+2. From the `root` directory, install dependencies:
    ```bash
    npm install
    cd client
