@@ -1,0 +1,47 @@
+packages:
+  - apps/*
+  - packages/*
+  - tools/*
+
+catalog:
+  "@lightspots/storageprovider": ^2.0.1
+  "@tailwindcss/postcss": ^4.2.4
+  "@types/leaflet": ^1.9.21
+  "@types/node": ^24
+  "@types/react": ^19.2.14
+  "@types/react-dom": ^19.2.3
+  "@vitejs/plugin-react": ^6.0.1
+  adm-zip: ^0.5.17
+  autoprefixer: ^10.5.0
+  chokidar: ^5.0.0
+  cors: ^2.8.6
+  dds-parser: ^1.0.1
+  dxt-js: ^0.0.3
+  express: ^5.2.1
+  fast-xml-parser: ^5.7.2
+  leaflet: ^1.9.4
+  lucide-react: ^1.11.0
+  postcss: ^8.5.10
+  react: ^19.2.5
+  react-dom: ^19.2.5
+  react-leaflet: ^5.0.0
+  sharp: ^0.34.5
+  socket.io: ^4.8.3
+  socket.io-client: ^4.8.3
+  tailwindcss: ^4.2.4
+  typescript: ^5
+  vite: npm:@voidzero-dev/vite-plus-core@latest
+  vite-plus: latest
+  vitest: npm:@voidzero-dev/vite-plus-test@latest
+
+catalogMode: prefer
+overrides:
+  vite: "catalog:"
+  vitest: "catalog:"
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: "*"
+    vitest: "*"
