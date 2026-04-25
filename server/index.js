@@ -22,12 +22,40 @@ const io = new Server(server, {
 });
 
 const PORT = process.env.PORT || 3001;
-const GAME_DIR = path.join(
-  process.env.USERPROFILE,
-  "Documents",
-  "My Games",
-  "FarmingSimulator2025",
-);
+
+function getGameDir() {
+  if (process.platform === "win32") {
+    return path.join(
+      process.env.USERPROFILE,
+      "Documents",
+      "My Games",
+      "FarmingSimulator2025",
+    );
+  } else if (process.platform === "linux") {
+    // Steam installation path on Linux
+    return path.join(
+      process.env.HOME,
+      ".steam",
+      "steam",
+      "steamapps",
+      "compatdata",
+      // fs25 steam id
+      "2300320",
+      "pfx",
+      "drive_c",
+      "users",
+      "steamuser",
+      "Documents",
+      "My Games",
+      "FarmingSimulator2025",
+    );
+  }
+
+  throw new Error("Unsupported platform");
+}
+
+const GAME_DIR = getGameDir();
+console.log("Game Directory:", GAME_DIR);
 const XML_FILE_PATH = path.join(GAME_DIR, "gameGlassInterface.xml");
 
 app.get("/api/map-image", async (req, res) => {
